@@ -2,7 +2,7 @@
 let 
 	min =1,
 	max =10,
-	winNum = 2,
+	winNum = randomNum(min, max),
 	guessLeft = 3
 ;
 
@@ -20,39 +20,33 @@ const
 minNum.textContent = min;
 maxNum.textContent = max;
 
-//Liisten for guess
+//Listen for guess
 guessBtn.addEventListener('click', function(){
 	let guess = parseInt(guessInput.value);
 
+	//clear Input
+	guessInput.value = ' ';
+
 	//Validte number range
 	if( isNaN(guess) || guess < min || guess > max ){
-		setMessage(`Please enter a number between ${min} an ${max}`, 'red' )
+		setMessage(`Please enter a number between ${min} an ${max}`, 'red' ); 
 	}
 
 	//Check for win
 	if (guess === winNum) {
 		//Game over - Game won
-		//disable Input
-		guessInput.disabled = true;
-		//Chamge boder color
-		guessInput.style.borderColor = 'green'
-		//Set message
-		setMessage(`${winNum} is correct, YOU WIN!`, 'green' )
+		gameOver(true, `${winNum} is correct, YOU WIN!` );
+	
 	}
 	else{
 		guessLeft -= 1 ;
 
 		if(guessLeft === 0){
-		//disable Input
-		guessInput.disabled = true;
-		//Chamge boder color
-		guessInput.style.borderColor = 'red';
-		//Set message
-		setMessage(` Game over, you lost. The correct Number is ${winNum} `, 'red' );
+
+			gameOver(false, ` Game over, you lost. The correct Number is ${winNum} ` );
+
 		}
 		else{
-			//clear Input
-			guessInput.value = ' ';
 			//Chamge boder color
 			guessInput.style.borderColor = 'red';
 			//Set message
@@ -60,6 +54,33 @@ guessBtn.addEventListener('click', function(){
 		}
 	}
 });
+
+// Play Again Listener
+game.addEventListener('mousedown', function(e){
+	if(e.target.className === 'play-again'){
+		window.location.reload();
+	}
+});
+//Game over Function
+function gameOver(won, msg){
+	let color;
+	won === true ? color = 'green' : color = 'red';
+	//disable Input
+	guessInput.disabled = true;
+	//Chamge boder color
+	guessInput.style.borderColor = color;
+	//Set message
+	setMessage(msg, color );
+
+	//Play Again
+	guessBtn.value = "PLAY AGAIN";
+	guessBtn.className = 'play-again';
+}
+
+//Random Number function
+function randomNum(){
+	return Math.floor(Math.random()*(max - min + 1) + min);
+}
 
 //Set Message
 function setMessage(msg, color){
